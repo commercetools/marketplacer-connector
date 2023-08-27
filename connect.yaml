@@ -1,0 +1,19 @@
+deployAs:
+  - name: hello-world-mvc
+    applicationType: service
+    endpoint: /
+    configuration:
+      standardConfiguration:
+        - key: CTP_REGION
+          description: region of commercetools composable commerce project
+      securedConfiguration:
+        - key: CTP_PROJECT_KEY
+          description: project key from commercetools composable commerce project
+        - key: CTP_CLIENT_ID
+          description: client id from commercetools composable commerce project
+        - key: CTP_CLIENT_SECRET
+          description: client secret from commercetools composable commerce project
+        - key: CTP_SCOPE
+          description: scope from commercetools composable commerce project
+    scripts:
+      postDeploy: "mvn compile && mvn exec:java -Dexec.mainClass=com.commercetools.connect.template.helloworldmvc.post.PostDeploy"
