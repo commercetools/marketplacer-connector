@@ -34,27 +34,22 @@ public class CreateCustomObjectService {
 
     static ProjectApiRoot apiRoot = createApiClient();
 
-    public String createCustomObjects(MarketplacerRequest marketplacerRequest) throws IOException {
-//        BufferedWriter writer = response.getWriter();
-//        String requestBody = CharStreams.toString(request.getReader());
-//        logger.info("Request : " + requestBody);
-//        MarketplacerRequest marketplacerRequest = gson.fromJson(requestBody, MarketplacerRequest.class);
+    public String createCustomObjects(String requestBody) throws IOException {
+        logger.info("Request : " + requestBody);
+        MarketplacerRequest marketplacerRequest = gson.fromJson(requestBody, MarketplacerRequest.class);
+        JsonObject jsonResponse = new JsonObject();
         try {
             logger.info(gson.toJson(marketplacerRequest));
-            JsonObject jsonResponse = new JsonObject();
             CustomObject seller = createCustomObject(marketplacerRequest);
             jsonResponse.addProperty(marketplacerRequest.getPayload().getData().getNode().getTypename(), seller.getId());
-            // writer.write(gson.toJson(jsonResponse));
         } catch (Exception e) {
             String stacktrace = ExceptionUtils.getStackTrace(e);
-            JsonObject jsonResponse = new JsonObject();
-            // jsonResponse.addProperty("originalRequest" , requestBody);
+            jsonResponse = new JsonObject();
+            jsonResponse.addProperty("originalRequest" , requestBody);
             jsonResponse.addProperty("stackTrace" , stacktrace);
             logger.info(stacktrace);
-            // writer.write(gson.toJson(jsonResponse));
         }
-        // response.setContentType("application/json");
-        return null;
+        return jsonResponse.toString();
     }
 
     public static CustomObject createCustomObject(MarketplacerRequest request) {

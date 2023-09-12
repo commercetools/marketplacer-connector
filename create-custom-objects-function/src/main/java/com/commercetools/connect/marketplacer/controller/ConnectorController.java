@@ -15,9 +15,9 @@ public class ConnectorController {
     CreateCustomObjectService createCustomObjectService;
 
     @GetMapping("/")
-    public String createCustomObjects(MarketplacerRequest marketplacerRequest) {
+    public String createCustomObjects(String requestBody) {
         try {
-            return createCustomObjectService.createCustomObjects(marketplacerRequest);
+            return createCustomObjectService.createCustomObjects(requestBody);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -12,6 +12,7 @@ import com.commercetools.connect.marketplacer.model.Edge;
 import com.commercetools.connect.marketplacer.model.MarketplacerRequest;
 import com.commercetools.connect.marketplacer.model.Option;
 import com.commercetools.connect.marketplacer.utils.ConfigReader;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.vrap.rmf.base.client.error.NotFoundException;
@@ -19,7 +20,6 @@ import io.vrap.rmf.base.client.oauth2.ClientCredentials;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 @Service
 public class ConnectorService {
     private static final Gson gson = new Gson();
-
     private static final Logger logger = Logger.getLogger(ConnectorService.class.getName());
 
     private static final ConfigReader configReader = new ConfigReader();
@@ -44,39 +43,30 @@ public class ConnectorService {
                 .build(configReader.getProjectId());
         return apiRoot;
     }
-
     static ProjectApiRoot apiRoot = createApiClient();
 
-    public String createVariantsFuncion(MarketplacerRequest marketplacerRequest)
-            throws IOException {
-//        BufferedWriter writer = response.getWriter();
-//        String requestBody = CharStreams.toString(request.getReader());
-//        logger.info("Request : " + requestBody);
-//        MarketplacerRequest marketplacerRequest = gson.fromJson(requestBody, MarketplacerRequest.class);
+    public String createVariants(String requestBody) throws IOException {
+        MarketplacerRequest marketplacerRequest = gson.fromJson(requestBody, MarketplacerRequest.class);
+        JsonObject jsonResponse = new JsonObject();
         try {
             logger.info(gson.toJson(marketplacerRequest));
-            JsonObject jsonResponse = new JsonObject();
             Optional<Product> product = getProductByKey(marketplacerRequest.getPayload().getData().getNode().getLegacyId());
             if (!product.isPresent()) {
                 String productId = createProduct(marketplacerRequest).getId();
                 jsonResponse.addProperty("productId", productId);
-                // writer.write(gson.toJson(jsonResponse));
                 logger.info("Product created: " + productId);
             } else {
                 updateProduct(product.get(), marketplacerRequest);
                 jsonResponse.addProperty("updatedProduct", product.get().getId());
-                // writer.write(gson.toJson(jsonResponse));
             }
         } catch (Exception e) {
             String stacktrace = ExceptionUtils.getStackTrace(e);
-            JsonObject jsonResponse = new JsonObject();
-            // jsonResponse.addProperty("originalRequest" , requestBody);
+            jsonResponse = new JsonObject();
+            jsonResponse.addProperty("originalRequest" , requestBody);
             jsonResponse.addProperty("stackTrace" , stacktrace);
             logger.info(stacktrace);
-            // writer.write(gson.toJson(jsonResponse));
         }
-        // response.setContentType("application/json");
-        return null;
+        return jsonResponse.toString();
     }
 
     public static Product createProduct(MarketplacerRequest marketplacerRequest) {
