@@ -5,6 +5,7 @@ import com.commercetools.connect.marketplacer.service.ConnectorService;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -14,7 +15,6 @@ import java.util.logging.Logger;
 public class ConnectorController {
 
     private static final Logger logger = Logger.getLogger(ConnectorController.class.getName());
-    private static final Gson gson = new Gson();
 
     final ConnectorService connectorService;
 
@@ -24,7 +24,7 @@ public class ConnectorController {
     }
 
     @PostMapping("/")
-    public String createVariants(String requestBody) {
+    public String createVariants(@RequestBody String requestBody) {
         logger.info("Request : " + requestBody);
         try {
             return connectorService.createVariants(requestBody);
