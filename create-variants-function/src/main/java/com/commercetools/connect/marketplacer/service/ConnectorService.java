@@ -37,10 +37,10 @@ public class ConnectorService {
         final ProjectApiRoot apiRoot = ApiRootBuilder.of()
                 .defaultClient(ClientCredentials.of()
                                 .withClientId(configReader.getClientId())
-                                .withClientSecret(configReader.getSecret())
+                                .withClientSecret(configReader.getClientSecret())
                                 .build(),
                         ServiceRegion.GCP_US_CENTRAL1)
-                .build(configReader.getProjectId());
+                .build(configReader.getProjectKey());
         return apiRoot;
     }
     static ProjectApiRoot apiRoot = createApiClient();
