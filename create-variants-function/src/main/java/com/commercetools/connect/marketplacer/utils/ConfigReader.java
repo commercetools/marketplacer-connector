@@ -9,6 +9,9 @@ public class ConfigReader {
     public static final java.lang.String CLIENT_ID = "CTP_CLIENT_ID";
     public static final java.lang.String CLIENT_SECRET = "CTP_CLIENT_SECRET";
     public static final java.lang.String PROJECT_KEY = "CTP_PROJECT_KEY";
+    public static final String MAIN_PRODUCT_TYPE = "mainProductType";
+    public static final String ROOT_CATEGORY = "rootCategory";
+    public static final String CHILD_CATEGORY = "childCategory";
 
     private Properties properties;
 
@@ -19,14 +22,14 @@ public class ConfigReader {
             if (inputStream != null) {
                 properties.load(inputStream);
             }
-        }catch(IOException e){
+        } catch(IOException e) {
             e.printStackTrace();
         }
     }
 
     public String getClientId() {
         String clientId = properties.getProperty(CLIENT_ID);
-        if(null == clientId) {
+        if (null == clientId) {
             clientId = System.getenv(CLIENT_ID);
         }
         return clientId;
@@ -34,7 +37,7 @@ public class ConfigReader {
 
     public String getClientSecret() {
         String clientSecret = properties.getProperty(CLIENT_SECRET);
-        if(null == clientSecret) {
+        if (null == clientSecret) {
             clientSecret = System.getenv(CLIENT_SECRET);
         }
         return clientSecret;
@@ -42,21 +45,33 @@ public class ConfigReader {
 
     public String getProjectKey() {
         String projectKey = properties.getProperty(PROJECT_KEY);
-        if(null == projectKey) {
+        if (null == projectKey) {
             projectKey = System.getenv(PROJECT_KEY);
         }
         return projectKey;
     }
 
     public String getMainProductType() {
-        return properties.getProperty("mainProductType");
+        String mainProductType = properties.getProperty(MAIN_PRODUCT_TYPE);
+        if (null == mainProductType) {
+            mainProductType = System.getenv(MAIN_PRODUCT_TYPE);
+        }
+        return mainProductType;
     }
 
     public String getRootCategory() {
-        return properties.getProperty("rootCategory");
+        String rootCategory = properties.getProperty(ROOT_CATEGORY);
+        if (null == rootCategory) {
+            rootCategory = System.getenv(ROOT_CATEGORY);
+        }
+        return rootCategory;
     }
 
     public String getChildCategory() {
-        return properties.getProperty("childCategory");
+        String childCategory = properties.getProperty(CHILD_CATEGORY);
+        if (null == childCategory) {
+            childCategory = System.getenv(CHILD_CATEGORY);
+        }
+        return childCategory;
     }
 }

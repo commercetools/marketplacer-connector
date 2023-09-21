@@ -39,7 +39,7 @@ public class ConnectorService {
                                 .withClientId(configReader.getClientId())
                                 .withClientSecret(configReader.getClientSecret())
                                 .build(),
-                        ServiceRegion.GCP_US_CENTRAL1)
+                        ServiceRegion.GCP_EUROPE_WEST1)
                 .build(configReader.getProjectKey());
         return apiRoot;
     }
