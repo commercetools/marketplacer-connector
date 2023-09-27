@@ -13,14 +13,12 @@ import com.commercetools.connect.marketplacer.model.MarketplacerRequest;
 import com.commercetools.connect.marketplacer.model.Option;
 import com.commercetools.connect.marketplacer.utils.ConfigReader;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.vrap.rmf.base.client.error.NotFoundException;
 import io.vrap.rmf.base.client.oauth2.ClientCredentials;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +26,6 @@ import java.util.logging.Logger;
 
 @Service
 public class ConnectorService {
-    private static final Gson gson = new Gson();
     private static final Logger logger = Logger.getLogger(ConnectorService.class.getName());
 
     private static final ConfigReader configReader = new ConfigReader();
@@ -45,11 +42,9 @@ public class ConnectorService {
     }
     static ProjectApiRoot apiRoot = createApiClient();
 
-    public String createVariants(String requestBody) throws IOException {
-        MarketplacerRequest marketplacerRequest = gson.fromJson(requestBody, MarketplacerRequest.class);
+    public String createVariants(MarketplacerRequest marketplacerRequest) throws Exception {
         JsonObject jsonResponse = new JsonObject();
         try {
-            logger.info(gson.toJson(marketplacerRequest));
             Optional<Product> product = getProductByKey(marketplacerRequest.getPayload().getData().getNode().getLegacyId());
             if (!product.isPresent()) {
                 String productId = createProduct(marketplacerRequest).getId();
@@ -62,9 +57,9 @@ public class ConnectorService {
         } catch (Exception e) {
             String stacktrace = ExceptionUtils.getStackTrace(e);
             jsonResponse = new JsonObject();
-            jsonResponse.addProperty("originalRequest" , requestBody);
             jsonResponse.addProperty("stackTrace" , stacktrace);
             logger.info(stacktrace);
+            throw new Exception(jsonResponse.toString());
         }
         return jsonResponse.toString();
     }
