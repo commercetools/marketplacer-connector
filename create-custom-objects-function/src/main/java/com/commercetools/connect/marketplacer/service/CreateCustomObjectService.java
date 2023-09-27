@@ -6,19 +6,15 @@ import com.commercetools.api.defaultconfig.ServiceRegion;
 import com.commercetools.api.models.custom_object.CustomObject;
 import com.commercetools.api.models.custom_object.CustomObjectDraft;
 import com.commercetools.connect.marketplacer.model.MarketplacerRequest;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.vrap.rmf.base.client.oauth2.ClientCredentials;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.logging.Logger;
 
 @Service
 public class CreateCustomObjectService {
-    private static final Gson gson = new Gson();
-
     private static final Logger logger = Logger.getLogger(CreateCustomObjectService.class.getName());
 
     public static ProjectApiRoot createApiClient() {
@@ -34,20 +30,17 @@ public class CreateCustomObjectService {
 
     static ProjectApiRoot apiRoot = createApiClient();
 
-    public String createCustomObjects(String requestBody) throws IOException {
-        logger.info("Request : " + requestBody);
-        MarketplacerRequest marketplacerRequest = gson.fromJson(requestBody, MarketplacerRequest.class);
+    public String createCustomObjects(MarketplacerRequest marketplacerRequest) throws Exception {
         JsonObject jsonResponse = new JsonObject();
         try {
-            logger.info(gson.toJson(marketplacerRequest));
             CustomObject seller = createCustomObject(marketplacerRequest);
             jsonResponse.addProperty(marketplacerRequest.getPayload().getData().getNode().getTypename(), seller.getId());
         } catch (Exception e) {
             String stacktrace = ExceptionUtils.getStackTrace(e);
             jsonResponse = new JsonObject();
-            jsonResponse.addProperty("originalRequest" , requestBody);
             jsonResponse.addProperty("stackTrace" , stacktrace);
             logger.info(stacktrace);
+            throw new Exception(jsonResponse.toString());
         }
         return jsonResponse.toString();
     }
